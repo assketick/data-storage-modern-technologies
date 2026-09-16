@@ -1,0 +1,6 @@
+NAME                                 IMAGE                                              COMMAND                  SERVICE      CREATED        STATUS                    PORTS
+hse-lakehouse-student-minio-1        quay.io/minio/minio:RELEASE.2025-09-07T16-13-09Z   "/usr/bin/docker-ent…"   minio        20 hours ago   Up 20 hours (healthy)     127.0.0.1:9000-9001->9000-9001/tcp
+hse-lakehouse-student-minio-init-1   quay.io/minio/mc:latest                            "/bin/sh -c ' mc ali…"   minio-init   20 hours ago   Exited (0) 20 hours ago   
+hse-lakehouse-student-postgres-1     postgres:16-alpine                                 "docker-entrypoint.s…"   postgres     20 hours ago   Up 20 hours (healthy)     5432/tcp
+hse-lakehouse-student-spark-1        hse-lakehouse-student-spark                        "sleep infinity"         spark        20 hours ago   Up 20 hours               127.0.0.1:4040->4040/tcp
+hse-lakehouse-student-trino-1        hse-lakehouse-student-trino                        "/usr/lib/trino/bin/…"   trino        20 hours ago   Up 20 hours (healthy)     127.0.0.1:8088->8080/tcp

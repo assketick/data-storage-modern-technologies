@@ -1,0 +1,26 @@
+=== raw/nvtukhlin/wikipageviews (неизменённые .gz оригиналы) ===
+[2026-09-15 21:12:40 UTC]  42MiB STANDARD wikipageviews/ingestion_date=2026-09-16/pageviews-20150501-010000.gz
+[2026-09-15 21:12:41 UTC]  42MiB STANDARD wikipageviews/ingestion_date=2026-09-16/pageviews-20150501-020000.gz
+
+=== datalake/nvtukhlin/wikipageviews/staging_csv (подготовленный табличный CSV) ===
+[2026-09-15 21:19:18 UTC] 105MiB STANDARD wikipageviews.csv
+
+=== datalake/nvtukhlin/wikipageviews/parquet (партиции event_hour) ===
+[2026-09-16 16:19:34 UTC]     0B STANDARD _SUCCESS
+[2026-09-16 16:30:19 UTC]     0B event_hour=1/
+[2026-09-16 16:30:19 UTC]     0B event_hour=2/
+[2026-09-16 16:19:34 UTC] 2.7MiB STANDARD part-00000-d3b2ccb6-1274-4e47-b11b-c7ed553d6b0d.c000.snappy.parquet
+[2026-09-16 16:19:34 UTC] 3.1MiB STANDARD part-00001-d3b2ccb6-1274-4e47-b11b-c7ed553d6b0d.c000.snappy.parquet
+[2026-09-16 16:19:34 UTC] 2.9MiB STANDARD part-00002-d3b2ccb6-1274-4e47-b11b-c7ed553d6b0d.c000.snappy.parquet
+
+=== Iceberg-таблица lakehouse.nvtukhlin.wikipageviews: metadata ===
+[2026-09-16 16:19:43 UTC] 2.1KiB STANDARD 00000-935064e5-5aef-40fb-8b54-5c624d0c9eab.metadata.json
+[2026-09-16 16:19:44 UTC] 3.2KiB STANDARD 00001-cfb16ece-b9b6-46f1-993c-45f6bf78fec7.metadata.json
+[2026-09-16 16:19:43 UTC] 7.5KiB STANDARD 58bdcd07-3f65-4a33-96cf-97e4e525af5d-m0.avro
+[2026-09-16 16:19:44 UTC] 7.5KiB STANDARD eddce913-3e10-4396-9a9d-bff9ac7e9d31-m0.avro
+[2026-09-16 16:19:44 UTC] 4.5KiB STANDARD snap-4163048399897555244-1-eddce913-3e10-4396-9a9d-bff9ac7e9d31.avro
+[2026-09-16 16:19:43 UTC] 4.4KiB STANDARD snap-8075560864216313162-1-58bdcd07-3f65-4a33-96cf-97e4e525af5d.avro
+
+=== Iceberg-таблица: партиции данных ===
+[2026-09-16 16:30:19 UTC]     0B event_hour=1/
+[2026-09-16 16:30:19 UTC]     0B event_hour=2/

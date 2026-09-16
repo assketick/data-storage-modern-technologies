@@ -1,0 +1,53 @@
+== CSV: явная схема 6 полей ==
+root
+ |-- domain_code: string (nullable = true)
+ |-- page_title: string (nullable = true)
+ |-- count_views: integer (nullable = true)
+ |-- total_response_size: integer (nullable = true)
+ |-- event_date: date (nullable = true)
+ |-- event_hour: integer (nullable = true)
+
+Проверки: rows=2,600,099; доля NULL page_title=0.000000; невозможные count_views=0; domain_code!=en=0; неверные event_date/event_hour=0
+Отклонённых строк нет: воспроизводимая проверка с нулевым результатом (источник уже агрегирован MediaWiki, грязных строк не ожидается).
+raw=2,600,099 = accepted=2,600,099 + rejected=0
+
+== Parquet: partitionBy(event_hour) — две непересекающиеся порции ==
+Имена и типы всех полей CSV = Parquet (порядок колонок не сравниваем)
+Строки accepted = Parquet: 2,600,099
+Размер staging CSV: 105.38 МиБ; Parquet: 32.87 МиБ
+Отношение размеров CSV/Parquet: 3.21
+
+== Один запрос: просмотры по namespace ==
+
+    SELECT namespace, count(*) AS pages, sum(count_views) AS total_views
+    FROM wiki_csv
+    GROUP BY namespace
+    ORDER BY total_views DESC
+
+По 3 измерения каждого формата; первый замер отдельно.
+CSV, первый замер: 1.329 с; топ строка: {'namespace': '(article)', 'pages': 2322536, 'total_views': 11451033}
+PARQUET, первый замер: 0.416 с; топ строка: {'namespace': '(article)', 'pages': 2322536, 'total_views': 11451033}
+PARQUET, повтор 2: 0.276 с; топ строка: {'namespace': '(article)', 'pages': 2322536, 'total_views': 11451033}
+CSV, повтор 2: 1.079 с; топ строка: {'namespace': '(article)', 'pages': 2322536, 'total_views': 11451033}
+CSV, повтор 3: 0.629 с; топ строка: {'namespace': '(article)', 'pages': 2322536, 'total_views': 11451033}
+PARQUET, повтор 3: 0.194 с; топ строка: {'namespace': '(article)', 'pages': 2322536, 'total_views': 11451033}
+Результаты CSV = Parquet во всех замерах.
+Время зависит от кэшей, прогрева и среды; преимущество формата по скорости не гарантируется.
+
+== Iceberg: две непересекающиеся порции по event_hour ==
+Запись 1: CTAS event_hour = 1
+После записи 1: 1,294,434 строк; новые snapshots: [6253806925439239347]
+Запись 2: INSERT event_hour = 2
+После записи 2: 2,600,099 строк; новые snapshots: [9125261631710802980]
+Проверка: сумма двух порций Iceberg = accepted.
+
+== История snapshots ==
++-------------------+-----------------------+---------+-------------+
+|snapshot_id        |committed_at           |operation|total_records|
++-------------------+-----------------------+---------+-------------+
+|8075560864216313162|2026-09-16 16:19:43.199|overwrite|1294434      |
+|4163048399897555244|2026-09-16 16:19:44.944|append   |2600099      |
+|6253806925439239347|2026-09-16 16:31:06.488|overwrite|1294434      |
+|9125261631710802980|2026-09-16 16:31:08.165|append   |2600099      |
++-------------------+-----------------------+---------+-------------+
+
