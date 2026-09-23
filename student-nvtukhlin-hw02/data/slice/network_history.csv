@@ -1,0 +1,10 @@
+net,network_name,valid_from,valid_to
+us,USGS National Earthquake Information Center,1900-01-01,9999-12-31
+ak,Alaska Earthquake Center,1900-01-01,9999-12-31
+nc,Northern California Seismic System,1900-01-01,9999-12-31
+pr,Puerto Rico Seismic Network,1900-01-01,9999-12-31
+ci,Southern California Seismic Network,1900-01-01,9999-12-31
+hv,Hawaiian Volcano Observatory Network,1900-01-01,9999-12-31
+tx,TexNet,1900-01-01,9999-12-31
+uu,University of Utah Regional Network,1900-01-01,9999-12-31
+uw,Pacific Northwest Seismic Network,1900-01-01,9999-12-31

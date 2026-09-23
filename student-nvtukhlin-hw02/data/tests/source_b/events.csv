@@ -1,0 +1,4 @@
+time,latitude,longitude,depth,mag,magType,nst,gap,dmin,rms,net,id,updated,place,type,horizontalError,depthError,magError,magNst,status,locationSource,magSource
+2025-03-03T12:00:00.000Z,14.9357,-60.601,65.29,3.1,mwr,73,99,0.557,0.66,sb,us6000pwis,2025-05-08T19:24:45.040Z,synthetic second source event 0,earthquake,4.61,6.105,0.047,43,reviewed,us,us
+2025-03-03T12:00:01.000Z,-9.4816,117.3686,65.413,3.2,mb,16,142,0.765,0.71,sb,us6000pwit,2025-05-08T19:24:45.040Z,synthetic second source event 1,earthquake,9.55,8.767,0.182,8,reviewed,us,us
+2025-03-03T12:00:02.000Z,-4.8894,68.6672,10,3.3,mb,32,102,4.668,0.42,sb,us6000pyee,2025-05-08T19:24:48.040Z,synthetic second source event 2,earthquake,8.05,1.884,0.113,23,reviewed,us,us

@@ -1,0 +1,51 @@
+== CASE corrupt: row added
+time,mag,net,id,type
+2025-03-03T00:01:29.714Z,99,us,corrupt_0001, Martinique"
+-- publication log before
+          run_id          | rows_published |             checksum             |         published_at          
+--------------------------+----------------+----------------------------------+-------------------------------
+ restore_after_overlap    |             27 | 6d50889ef0c7a2ad2ea2b35811581010 | 2026-09-23 19:56:46.406333+00
+ restore_after_source_b_2 |             27 | 6d50889ef0c7a2ad2ea2b35811581010 | 2026-09-23 19:55:55.459791+00
+(2 rows)
+
+-- run with corrupt input
+run_id=case_corrupt cases='corrupt' window=[2025-03-03,2025-03-06) dag_state=failed
+  load_raw               success
+  dbt_build_candidate    success
+  dbt_test               failed
+  publish                upstream_failed
+-- dbt_test log
+[0m19:57:38  5 of 32 FAIL 1 magnitude_and_depth_in_range .................................... [[31mFAIL 1[0m in 0.02s]
+[0m19:57:38  14 of 32 FAIL 1 not_null_fact_earthquake_mag_class_key ......................... [[31mFAIL 1[0m in 0.03s]
+[0m19:57:38  16 of 32 FAIL 1 not_null_mart_daily_quakes_class_key ........................... [[31mFAIL 1[0m in 0.03s]
+[0m19:57:39    Got 1 result, configured to fail if != 0
+[0m19:57:39    Got 1 result, configured to fail if != 0
+[0m19:57:39    Got 1 result, configured to fail if != 0
+[0m19:57:39  Done. PASS=29 WARN=0 ERROR=3 SKIP=0 NO-OP=0 REUSED=0 TOTAL=32
+Marking task as FAILED. dag_id=quakes_elt, task_id=dbt_test, run_id=case_corrupt, execution_date=20260923T195731, start_date=20260923T195737, end_date=20260923T195739
+-- failing row found through dbt stored failures
+            event_key             |   event_id   | magnitude | depth_km 
+----------------------------------+--------------+-----------+----------
+ 3406d045e4d83d740bb5571ac0ad4c60 | corrupt_0001 |        99 |    65.29
+(1 row)
+
+-- trace the row back to raw
+      id      |           time           | mag | net |    type    | _slice_id | _is_synthetic 
+--------------+--------------------------+-----+-----+------------+-----------+---------------
+ corrupt_0001 | 2025-03-03T00:01:29.714Z | 99  | us  | earthquake | corrupt   | t
+(1 row)
+
+-- consumer still sees previous publication
+mart: rows 27 vs 27; only_in_run1=0; only_in_after_corrupt=0; md5 6d50889ef0c7a2ad2ea2b35811581010 vs 6d50889ef0c7a2ad2ea2b35811581010; identical=True
+ publications |        last_published         
+--------------+-------------------------------
+           12 | 2026-09-23 19:56:46.406333+00
+(1 row)
+
+ event_date | events 
+------------+--------
+ 2025-03-03 |     74
+ 2025-03-04 |     76
+ 2025-03-05 |     60
+(3 rows)
+

@@ -1,0 +1,52 @@
+== CASE source_b: rows added
+time,mag,net,id,place
+2025-03-03T12:00:00.000Z,3.1,sb,us6000pwis,synthetic second source event 0
+2025-03-03T12:00:01.000Z,3.2,sb,us6000pwit,synthetic second source event 1
+2025-03-03T12:00:02.000Z,3.3,sb,us6000pyee,synthetic second source event 2
+net,network_name,valid_from,valid_to
+sb,Synthetic second source network,1900-01-01,9999-12-31
+-- run
+run_id=case_source_b_2 cases='source_b' window=[2025-03-03,2025-03-06) dag_state=success
+  load_raw               success
+  dbt_build_candidate    success
+  dbt_test               success
+  publish                success
+ source_system |  event_id  |          event_ts          | magnitude | net 
+---------------+------------+----------------------------+-----------+-----
+ synthetic_b   | us6000pwis | 2025-03-03 12:00:00+00     |       3.1 | sb
+ usgs          | us6000pwis | 2025-03-03 00:01:29.714+00 |       4.3 | us
+ synthetic_b   | us6000pwit | 2025-03-03 12:00:01+00     |       3.2 | sb
+ usgs          | us6000pwit | 2025-03-03 00:02:05.772+00 |       3.9 | us
+ synthetic_b   | us6000pyee | 2025-03-03 12:00:02+00     |       3.3 | sb
+ usgs          | us6000pyee | 2025-03-03 01:05:56.758+00 |       4.5 | us
+(6 rows)
+
+ fact_rows | distinct_event_id | distinct_event_key 
+-----------+-------------------+--------------------
+       213 |               210 |                213
+(1 row)
+
+ event_ids_shared_by_two_sources 
+---------------------------------
+                               3
+(1 row)
+
+ event_date | source_system | net |          network_name           | magnitude_class | events 
+------------+---------------+-----+---------------------------------+-----------------+--------
+ 2025-03-03 | synthetic_b   | sb  | Synthetic second source network | minor           |      3
+(1 row)
+
+ mart_events 
+-------------
+         213
+(1 row)
+
+-- restore baseline
+run_id=restore_after_source_b_2 cases='' window=[2025-03-03,2025-03-06) dag_state=success
+  load_raw               success
+  dbt_build_candidate    success
+  dbt_test               success
+  publish                success
+snapshot qa.mart_restored_b2: 27 rows
+snapshot qa.fact_restored_b2: 210 rows
+RESULT: IDENTICAL

@@ -1,0 +1,2 @@
+time,latitude,longitude,depth,mag,magType,nst,gap,dmin,rms,net,id,updated,place,type,horizontalError,depthError,magError,magNst,status,locationSource,magSource
+2025-03-03T00:02:05.772Z,-9.4816,117.3686,65.413,4.3,mb,16,142,0.765,0.71,us,us6000pwit,2026-01-01T00:00:00.000Z,"99 km SE of Taliwang, Indonesia",earthquake,9.55,8.767,0.182,8,reviewed,us,us

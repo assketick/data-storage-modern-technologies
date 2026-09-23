@@ -1,0 +1,29 @@
+  table_schema  |          table_name           | rows 
+----------------+-------------------------------+------
+ dbt_test_audit | fact_matches_stg_count        | 0
+ dbt_test_audit | mag_class_matches_magnitude   | 0
+ dbt_test_audit | magnitude_and_depth_in_range  | 0
+ dbt_test_audit | mart_grain_unique             | 0
+ dbt_test_audit | mart_reconciles_with_fact     | 0
+ dbt_test_audit | network_history_no_overlap    | 0
+ dbt_test_audit | one_network_version_per_event | 0
+ dds            | dim_date                      | 3
+ dds            | dim_magnitude_class           | 7
+ dds            | dim_network                   | 9
+ dds            | fact_earthquake               | 210
+ mart           | daily_quakes                  | 27
+ mart           | publication_log               | 15
+ mart_candidate | mart_daily_quakes             | 27
+ raw            | network_history               | 9
+ raw            | usgs_events                   | 212
+ seed           | mag_class                     | 7
+ stg            | stg_event_versions            | 212
+ stg            | stg_events_latest             | 212
+ stg            | stg_network_history           | 9
+(20 rows)
+
+ stored_failure_tables 
+-----------------------
+                    32
+(1 row)
+

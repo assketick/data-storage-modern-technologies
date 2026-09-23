@@ -1,0 +1,17 @@
+version: 2
+
+models:
+  - name: mart_daily_quakes
+    columns:
+      - name: event_date
+        data_tests:
+          - not_null
+      - name: class_key
+        data_tests:
+          - not_null
+      - name: net
+        data_tests:
+          - not_null
+      - name: events
+        data_tests:
+          - not_null

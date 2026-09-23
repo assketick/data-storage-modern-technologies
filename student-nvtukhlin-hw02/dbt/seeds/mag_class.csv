@@ -1,0 +1,8 @@
+class_key,class_name,mag_min,mag_max
+1,micro,-10,2
+2,minor,2,4
+3,light,4,5
+4,moderate,5,6
+5,strong,6,7
+6,major,7,8
+7,great,8,11

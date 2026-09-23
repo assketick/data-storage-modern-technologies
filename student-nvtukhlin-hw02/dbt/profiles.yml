@@ -1,0 +1,12 @@
+quakes:
+  target: candidate
+  outputs:
+    candidate:
+      type: postgres
+      host: "{{ env_var('WH_HOST') }}"
+      port: "{{ env_var('WH_PORT') | int }}"
+      user: "{{ env_var('WH_USER') }}"
+      password: "{{ env_var('WH_PASSWORD') }}"
+      dbname: "{{ env_var('WH_DB') }}"
+      schema: mart_candidate
+      threads: 2

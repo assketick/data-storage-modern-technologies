@@ -1,0 +1,25 @@
+== CASE dup: rows added
+time,mag,net,id,updated
+2025-03-03T00:01:29.714Z,4.3,us,us6000pwis,2025-05-08T19:24:45.040Z
+2025-03-03T00:02:05.772Z,3.9,us,us6000pwit,2025-05-08T19:24:45.040Z
+2025-03-03T01:05:56.758Z,4.5,us,us6000pyee,2025-05-08T19:24:48.040Z
+run_id=case_dup cases='dup' window=[2025-03-03,2025-03-06) dag_state=success
+  load_raw               success
+  dbt_test               success
+  dbt_build_candidate    success
+  publish                success
+ raw_rows | versions | latest | fact_rows 
+----------+----------+--------+-----------
+      215 |      215 |    212 |       210
+(1 row)
+
+snapshot qa.mart_dup: 27 rows
+snapshot qa.fact_dup: 210 rows
+mart: rows 27 vs 27; only_in_run1=0; only_in_dup=0; md5 6d50889ef0c7a2ad2ea2b35811581010 vs 6d50889ef0c7a2ad2ea2b35811581010; identical=True
+fact: rows 210 vs 210; only_in_run1=0; only_in_dup=0; md5 29771c4105314544cc0f8cb27543cbfc vs 29771c4105314544cc0f8cb27543cbfc; identical=True
+RESULT: IDENTICAL
+  run_id  | rows_published |             checksum             
+----------+----------------+----------------------------------
+ case_dup |             27 | 6d50889ef0c7a2ad2ea2b35811581010
+(1 row)
+

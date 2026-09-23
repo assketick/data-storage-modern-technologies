@@ -1,0 +1,2 @@
+time,latitude,longitude,depth,mag,magType,nst,gap,dmin,rms,net,id,updated,place,type,horizontalError,depthError,magError,magNst,status,locationSource,magSource
+2025-03-03T00:01:29.714Z,14.9357,-60.601,65.29,99,mwr,73,99,0.557,0.66,us,corrupt_0001,2025-05-08T19:24:45.040Z,"44 km ENE of La Trinité, Martinique",earthquake,4.61,6.105,0.047,43,reviewed,us,us

@@ -1,0 +1,72 @@
+== CASE late: changed row
+time,mag,net,id,updated
+2025-03-03T00:02:05.772Z,4.3,us,us6000pwit,2026-01-01T00:00:00.000Z
+-- reset to baseline
+run_id=reset_before_late cases='' window=[2025-03-03,2025-03-06) dag_state=success
+  dbt_build_candidate    success
+  load_raw               success
+  dbt_test               success
+  publish                success
+snapshot qa.mart_base_late: 27 rows
+snapshot qa.fact_base_late: 210 rows
+RESULT: IDENTICAL
+-- run with late correction
+run_id=case_late_1 cases='late' window=[2025-03-03,2025-03-06) dag_state=success
+  load_raw               success
+  dbt_build_candidate    success
+  dbt_test               success
+  publish                success
+snapshot qa.mart_late1: 27 rows
+snapshot qa.fact_late1: 210 rows
+ event_date | magnitude_class | net | events | avg_magnitude | max_magnitude 
+------------+-----------------+-----+--------+---------------+---------------
+ 2025-03-03 | light           | us  |     39 |         4.459 |           4.9
+ 2025-03-03 | minor           | us  |      9 |         2.822 |           3.7
+ 2025-03-03 | moderate        | us  |      3 |         5.233 |           5.4
+(3 rows)
+
+  event_id  | magnitude |       updated_ts       
+------------+-----------+------------------------
+ us6000pwit |       4.3 | 2026-01-01 00:00:00+00
+(1 row)
+
+  event_id  | magnitude |       updated_ts       | _slice_id | version_rank 
+------------+-----------+------------------------+-----------+--------------
+ us6000pwit |       4.3 | 2026-01-01 00:00:00+00 | late      |            1
+(1 row)
+
+  event_id  | magnitude |        updated_ts         | _slice_id 
+------------+-----------+---------------------------+-----------
+ us6000pwit |       3.9 | 2025-05-08 19:24:45.04+00 | baseline
+ us6000pwit |       4.3 | 2026-01-01 00:00:00+00    | late
+(2 rows)
+
+-- second run, same input
+run_id=case_late_2 cases='late' window=[2025-03-03,2025-03-06) dag_state=success
+  load_raw               success
+  publish                success
+  dbt_build_candidate    success
+  dbt_test               success
+snapshot qa.mart_late2: 27 rows
+snapshot qa.fact_late2: 210 rows
+mart: rows 27 vs 27; only_in_late1=0; only_in_late2=0; md5 895ce6c53443114033a4e3cad8411020 vs 895ce6c53443114033a4e3cad8411020; identical=True
+fact: rows 210 vs 210; only_in_late1=0; only_in_late2=0; md5 b541e4d1277392f8a63fcc88e3615d8e vs b541e4d1277392f8a63fcc88e3615d8e; identical=True
+RESULT: IDENTICAL
+-- diff vs baseline
+   src    | event_date | magnitude_class | net | events 
+----------+------------+-----------------+-----+--------
+ baseline | 2025-03-03 | light           | us  |     38
+ late     | 2025-03-03 | light           | us  |     39
+ baseline | 2025-03-03 | minor           | us  |     10
+ late     | 2025-03-03 | minor           | us  |      9
+(4 rows)
+
+-- restore baseline
+run_id=restore_after_late cases='' window=[2025-03-03,2025-03-06) dag_state=success
+  dbt_build_candidate    success
+  dbt_test               success
+  publish                success
+  load_raw               success
+snapshot qa.mart_restored_late: 27 rows
+snapshot qa.fact_restored_late: 210 rows
+RESULT: IDENTICAL

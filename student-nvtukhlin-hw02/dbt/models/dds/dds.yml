@@ -1,0 +1,48 @@
+version: 2
+
+models:
+  - name: dim_network
+    columns:
+      - name: network_key
+        data_tests:
+          - not_null
+          - unique
+  - name: dim_magnitude_class
+    columns:
+      - name: class_key
+        data_tests:
+          - not_null
+          - unique
+  - name: dim_date
+    columns:
+      - name: date_key
+        data_tests:
+          - not_null
+          - unique
+  - name: fact_earthquake
+    columns:
+      - name: event_key
+        data_tests:
+          - not_null
+          - unique
+      - name: network_key
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_network')
+                field: network_key
+      - name: mag_class_key
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_magnitude_class')
+                field: class_key
+      - name: event_date
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_date')
+                field: date_key

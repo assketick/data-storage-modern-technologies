@@ -1,0 +1,34 @@
+name: quakes
+version: "1.0.0"
+config-version: 2
+profile: quakes
+
+model-paths: ["models"]
+seed-paths: ["seeds"]
+test-paths: ["tests"]
+macro-paths: ["macros"]
+
+vars:
+  start_date: "2025-03-03"
+  end_date: "2025-03-06"
+
+models:
+  quakes:
+    staging:
+      +materialized: table
+      +schema: stg
+    dds:
+      +materialized: table
+      +schema: dds
+    marts:
+      +materialized: table
+      +schema: mart_candidate
+
+seeds:
+  quakes:
+    +schema: seed
+
+data_tests:
+  quakes:
+    +store_failures: true
+    +schema: dbt_test_audit

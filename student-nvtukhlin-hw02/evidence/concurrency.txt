@@ -1,0 +1,17 @@
+== two runs triggered back-to-back, DAG has max_active_runs=1
+|
+|
+ parallel_b               | queued  
+ parallel_a               | running 
+-- later
+|||
+|||
+ parallel_b               | success | 2026-09-23T20:18:20.888307+00:00 | 2026-09-23T20:18:29.943724+00:00
+ parallel_a               | success | 2026-09-23T20:18:11.189269+00:00 | 2026-09-23T20:18:19.832997+00:00
+-- publish is additionally serialized inside publish.py by pg_advisory_xact_lock(7331)
+   run_id   | rows_published |             checksum             
+------------+----------------+----------------------------------
+ parallel_a |             27 | 6d50889ef0c7a2ad2ea2b35811581010
+ parallel_b |             27 | 6d50889ef0c7a2ad2ea2b35811581010
+(2 rows)
+

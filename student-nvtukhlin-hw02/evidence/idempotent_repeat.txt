@@ -1,0 +1,12 @@
+== idempotent repeat: run1 (first_success) vs run2 (second_success)
+mart: rows 27 vs 27; only_in_run1=0; only_in_run2=0; md5 6d50889ef0c7a2ad2ea2b35811581010 vs 6d50889ef0c7a2ad2ea2b35811581010; identical=True
+fact: rows 210 vs 210; only_in_run1=0; only_in_run2=0; md5 29771c4105314544cc0f8cb27543cbfc vs 29771c4105314544cc0f8cb27543cbfc; identical=True
+RESULT: IDENTICAL
+     run_id     | rows_published |             checksum             
+----------------+----------------+----------------------------------
+ first_success  |             27 | 6d50889ef0c7a2ad2ea2b35811581010
+ second_success |             27 | 6d50889ef0c7a2ad2ea2b35811581010
+(2 rows)
+
+== after restore_final vs run1
+RESULT: IDENTICAL

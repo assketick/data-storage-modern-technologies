@@ -1,0 +1,24 @@
+== independent control (pure python over source CSV vs published mart)
+run_id=restore_final cases='' window=[2025-03-03,2025-03-06) dag_state=success
+  load_raw               success
+  dbt_build_candidate    success
+  dbt_test               success
+  publish                success
+day         class      src_events mart_events  src_avg mart_avg src_max mart_max
+2025-03-03  light              39          39     4.46     4.46     4.9      4.9
+2025-03-03  minor              32          32     2.92     2.92     3.9      3.9
+2025-03-03  moderate            3           3     5.23     5.23     5.4      5.4
+2025-03-04  light              40          40     4.35     4.35     4.9      4.9
+2025-03-04  minor              33          33     2.96     2.96     3.8      3.8
+2025-03-04  moderate            3           3     5.07     5.07     5.1      5.1
+2025-03-05  light              33          33     4.34     4.34     4.9      4.9
+2025-03-05  minor              23          23     2.94     2.94    3.67     3.67
+2025-03-05  moderate            4           4     5.30     5.30     5.5      5.5
+RESULT: MATCH
+== manual check, 2025-03-03, type=earthquake, raw awk count
+74
+ sum 
+-----
+  74
+(1 row)
+

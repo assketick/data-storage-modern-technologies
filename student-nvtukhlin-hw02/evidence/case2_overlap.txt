@@ -1,0 +1,78 @@
+== CASE overlap: row added
+net,network_name,valid_from,valid_to
+us,USGS NEIC renamed (synthetic overlap),2025-03-04,9999-12-31
+-- publication before
+ publications |        last_published         
+--------------+-------------------------------
+           11 | 2026-09-23 19:55:55.459791+00
+(1 row)
+
+-- run with overlapping history
+run_id=case_overlap cases='overlap' window=[2025-03-03,2025-03-06) dag_state=failed
+  load_raw               success
+  dbt_build_candidate    success
+  dbt_test               failed
+  publish                upstream_failed
+-- dbt_test log (failed tests)
+[0m19:56:27  3 of 32 FAIL 1 fact_matches_stg_count .......................................... [[31mFAIL 1[0m in 0.02s]
+[0m19:56:27  8 of 32 FAIL 1 network_history_no_overlap ...................................... [[31mFAIL 1[0m in 0.02s]
+[0m19:56:27  24 of 32 FAIL 109 one_network_version_per_event ................................ [[31mFAIL 109[0m in 0.03s]
+[0m19:56:27  31 of 32 FAIL 109 unique_fact_earthquake_event_key ............................. [[31mFAIL 109[0m in 0.03s]
+[0m19:56:27    Got 1 result, configured to fail if != 0
+[0m19:56:27    Got 1 result, configured to fail if != 0
+[0m19:56:27    Got 109 results, configured to fail if != 0
+[0m19:56:27    Got 109 results, configured to fail if != 0
+[0m19:56:27  Done. PASS=28 WARN=0 ERROR=4 SKIP=0 NO-OP=0 REUSED=0 TOTAL=32
+Marking task as FAILED. dag_id=quakes_elt, task_id=dbt_test, run_id=case_overlap, execution_date=20260923T195619, start_date=20260923T195625, end_date=20260923T195627
+-- offending rows stored by dbt
+ source_system | net |            version_a             |            version_b             |         a_from         |         b_from         
+---------------+-----+----------------------------------+----------------------------------+------------------------+------------------------
+ usgs          | us  | 964b8b712c0451406457e21d0ceb116a | ce850067c30d9d0fd44c7de45d467f9b | 2025-03-04 00:00:00+00 | 1900-01-01 00:00:00+00
+(1 row)
+
+  event_id  | source_system | net | matching_versions 
+------------+---------------+-----+-------------------
+ us6000pwq3 | usgs          | us  |                 2
+ us6000pwq6 | usgs          | us  |                 2
+ us6000pwqe | usgs          | us  |                 2
+ us6000pwqg | usgs          | us  |                 2
+ us6000pwqi | usgs          | us  |                 2
+(5 rows)
+
+ events_matching_two_versions 
+------------------------------
+                          109
+(1 row)
+
+ candidate_fact_rows | distinct_event_keys 
+---------------------+---------------------
+                 319 |                 210
+(1 row)
+
+-- published mart unchanged?
+snapshot qa.mart_after_overlap: 27 rows
+snapshot qa.fact_after_overlap: 319 rows
+RESULT: DIFFERENT
+ publications |        last_published         
+--------------+-------------------------------
+           11 | 2026-09-23 19:55:55.459791+00
+(1 row)
+
+-- restore baseline
+run_id=restore_after_overlap cases='' window=[2025-03-03,2025-03-06) dag_state=success
+  load_raw               success
+  dbt_build_candidate    success
+  dbt_test               success
+  publish                success
+snapshot qa.mart_restored_o: 27 rows
+snapshot qa.fact_restored_o: 210 rows
+RESULT: IDENTICAL
+ publications 
+--------------
+           12
+(1 row)
+
+
+-- published mart vs baseline after blocked run (fact snapshot is the unpublished candidate)
+mart: rows 27 vs 27; only_in_run1=0; only_in_after_overlap=0; md5 6d50889ef0c7a2ad2ea2b35811581010 vs 6d50889ef0c7a2ad2ea2b35811581010; identical=True
+fact: rows 210 vs 319; only_in_run1=0; only_in_after_overlap=109; md5 29771c4105314544cc0f8cb27543cbfc vs d316296d1ffecbb12b537aa165ef1a4c; identical=False
